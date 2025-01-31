@@ -52,7 +52,7 @@
 // MQTT CLIENT CONFIG  
 static const char* pubtopic       = "620161521";                    // Add your ID number here
 static const char* subtopic[]     = {"620161521_sub","/elet2415"};  // Array of Topics(Strings) to subscribe to
-static const char* mqtt_server    = "address or ip";                // Broker IP address or Domain name as a String 
+static const char* mqtt_server    = "yanacreations.com";                // Broker IP address or Domain name as a String 
 static uint16_t mqtt_port         = 1883;
 
 // WIFI CREDENTIALS
@@ -142,11 +142,16 @@ void vButtonCheck( void * pvParameters )  {
     configASSERT( ( ( uint32_t ) pvParameters ) == 1 );     
       
     for( ;; ) {
+
+      if (digitalRead(BTN_A) == LOW) { 
+      delay(500);
+      GDP();  // Generate, Display, and Publish the random number
+    }
         // Add code here to check if a button(S) is pressed
         // then execute appropriate function if a button is pressed  
-
-        vTaskDelay(200 / portTICK_PERIOD_MS);  
     }
+        vTaskDelay(200 / portTICK_PERIOD_MS);  
+    
 }
 
 void vUpdate( void * pvParameters )  {
