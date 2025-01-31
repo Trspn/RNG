@@ -12,6 +12,10 @@
                                 <VBtn class="text-subtitle-2"   density="compact"  color="primary" :variant="(route.name == 'Home')? 'tonal':'text'">Home</VBtn>
                             </RouterLink>
 
+                            <RouterLink class="route" to="/game">
+                                <VBtn class="text-subtitle-2" density="compact" color="primary" :variant="(route.name == 'Game')? 'tonal':'text'">Game</VBtn>
+                            </RouterLink>
+
                             <!-- Add Links Below -->
                                             
 
@@ -25,10 +29,14 @@
                     </VRow>
                 </VContainer>
             </VToolbar>
+
+            
   </template>
 
   
   <script setup>
+
+
     import { useRoute,useRouter } from "vue-router";
     import { useTheme } from 'vuetify';  
     import { ref ,watch ,onMounted ,onBeforeMount } from 'vue';
@@ -66,6 +74,8 @@
             darkmode.value = theme.global.current.value.dark;    
         }  
     });
+
+    
 
  
   </script>
