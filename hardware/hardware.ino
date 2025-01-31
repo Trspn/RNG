@@ -30,25 +30,34 @@
 #define ARDUINOJSON_USE_DOUBLE      1 
 // DEFINE THE PINS THAT WILL BE MAPPED TO THE 7 SEG DISPLAY BELOW, 'a' to 'g'
 #define a     15
+#define b     32
+#define c     33
+#define d     25
+#define e     26
+#define f     27
+#define g     14
+#define dp    12
 /* Complete all others */
 
 
 
 // DEFINE VARIABLES FOR TWO LEDs AND TWO BUTTONs. LED_A, LED_B, BTN_A , BTN_B
-#define LED_A 4
+#define LED_A 18
+#define LED_B 19
+#define BTN_A 22
 /* Complete all others */
 
 
 
 // MQTT CLIENT CONFIG  
-static const char* pubtopic       = "620012345";                    // Add your ID number here
-static const char* subtopic[]     = {"620012345_sub","/elet2415"};  // Array of Topics(Strings) to subscribe to
+static const char* pubtopic       = "620161521";                    // Add your ID number here
+static const char* subtopic[]     = {"620161521_sub","/elet2415"};  // Array of Topics(Strings) to subscribe to
 static const char* mqtt_server    = "address or ip";                // Broker IP address or Domain name as a String 
 static uint16_t mqtt_port         = 1883;
 
 // WIFI CREDENTIALS
-const char* ssid                  = "YOUR_SSID"; // Add your Wi-Fi ssid
-const char* password              = "YOUR_PASS"; // Add your Wi-Fi password 
+const char* ssid                  = "MonaConnect"; // Add your Wi-Fi ssid
+const char* password              = ""; // Add your Wi-Fi password 
 
 
 
@@ -96,10 +105,22 @@ void setup() {
 
   // CONFIGURE THE ARDUINO PINS OF THE 7SEG AS OUTPUT
   pinMode(a,OUTPUT);
+  pinMode(b,OUTPUT);
+  pinMode(c,OUTPUT);
+  pinMode(d,OUTPUT);
+  pinMode(e,OUTPUT);
+  pinMode(f,OUTPUT);
+  pinMode(g,OUTPUT);
+  pinMode(dp,OUTPUT);
   /* Configure all others here */
+   pinMode(LED_A,OUTPUT);
+  pinMode(LED_B,OUTPUT);
+  pinMode(BTN_A,INPUT_PULLUP);
 
+  Display(8);
   initialize();           // INIT WIFI, MQTT & NTP 
-  // vButtonCheckFunction(); // UNCOMMENT IF USING BUTTONS THEN ADD LOGIC FOR INTERFACING WITH BUTTONS IN THE vButtonCheck FUNCTION
+  vButtonCheckFunction();
+   // UNCOMMENT IF USING BUTTONS THEN ADD LOGIC FOR INTERFACING WITH BUTTONS IN THE vButtonCheck FUNCTION
 
 }
   
@@ -138,7 +159,7 @@ void vUpdate( void * pvParameters )  {
           char message[1100]  = {0};
 
           // Add key:value pairs to JSon object
-          doc["id"]         = "620012345";
+          doc["id"]         = "620161521";
 
           serializeJson(doc, message);  // Seralize / Covert JSon object to JSon string and store in char* array
 
@@ -192,9 +213,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
     const char* led = doc["device"];
 
     if(strcmp(led, "LED A") == 0){
+      toggleLED(LED_A);
       /*Add code to toggle LED A with appropriate function*/
     }
     if(strcmp(led, "LED B") == 0){
+      toggleLED(LED_B);
       /*Add code to toggle LED B with appropriate function*/
     }
 
@@ -204,14 +227,17 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
     // Add key:value pairs to Json object according to below schema
     // ‘{"id": "student_id", "timestamp": 1702212234, "number": 9, "ledA": 0, "ledB": 0}’
-    doc["id"]         = "ID"; // Change to your student ID number
+    doc["id"]         = "620161521"; // Change to your student ID number
     doc["timestamp"]  = getTimeStamp();
+    doc["number"]  = number;
+    doc["ledA"]  = getLEDStatus(LED_A);
+    doc["ledB"]  = getLEDStatus(LED_B);
     /*Add code here to insert all other variabes that are missing from Json object
     according to schema above
     */
 
     serializeJson(doc, message);  // Seralize / Covert JSon object to JSon string and store in char* array  
-    publish("topic", message);    // Publish to a topic that only the Frontend subscribes to.
+    publish("620161521", message);    // Publish to a topic that only the Frontend subscribes to.
           
   } 
 
@@ -236,20 +262,137 @@ bool publish(const char *topic, const char *payload){
 //***** Complete the util functions below ******
 
 void Display(unsigned char number){
+  if (number == 0) 
+  {
+    digitalWrite(a, HIGH);
+    digitalWrite(b, HIGH);
+    digitalWrite(c, HIGH);
+    digitalWrite(d, HIGH);
+    digitalWrite(e, HIGH);
+    digitalWrite(f, HIGH);
+    digitalWrite(g, LOW);
+  } 
+  if (number == 1) 
+  {
+  digitalWrite(a, LOW);
+  digitalWrite(b, HIGH);
+  digitalWrite(c, HIGH);
+  digitalWrite(d, LOW);
+  digitalWrite(e, LOW);
+  digitalWrite(f, LOW);
+  digitalWrite(g, LOW);
+  } 
+  if (number == 2) 
+  {
+  digitalWrite(a, HIGH);
+  digitalWrite(b, HIGH);
+  digitalWrite(c, LOW);
+  digitalWrite(d, HIGH);
+  digitalWrite(e, HIGH);
+  digitalWrite(f, LOW);
+  digitalWrite(g, HIGH);
+  } 
+  if (number == 3) 
+  {
+  digitalWrite(a, HIGH);
+  digitalWrite(b, HIGH);
+  digitalWrite(c, HIGH);
+  digitalWrite(d, HIGH);
+  digitalWrite(e, LOW);
+  digitalWrite(f, LOW);
+  digitalWrite(g, HIGH);
+  } 
+  if (number == 4) 
+  {
+  digitalWrite(a, LOW);
+  digitalWrite(b, HIGH);
+  digitalWrite(c, HIGH);
+  digitalWrite(d, LOW);
+  digitalWrite(e, LOW);
+  digitalWrite(f, HIGH);
+  digitalWrite(g, HIGH);
+  } 
+  if (number == 5) 
+  {
+  digitalWrite(a, HIGH);
+  digitalWrite(b, LOW);
+  digitalWrite(c, HIGH);
+  digitalWrite(d, HIGH);
+  digitalWrite(e, LOW);
+  digitalWrite(f, HIGH);
+  digitalWrite(g, HIGH);
+  }
+  if (number == 6) 
+  {
+  digitalWrite(a, HIGH);
+  digitalWrite(b, LOW);
+  digitalWrite(c, HIGH);
+  digitalWrite(d, HIGH);
+  digitalWrite(e, HIGH);
+  digitalWrite(f, HIGH);
+  digitalWrite(g, HIGH);
+  }
+  if (number == 7) 
+  {
+  digitalWrite(a, HIGH);
+  digitalWrite(b, HIGH);
+  digitalWrite(c, HIGH);
+  digitalWrite(d, LOW);
+  digitalWrite(e, LOW);
+  digitalWrite(f, LOW);
+  digitalWrite(g, LOW);
+  }
+  if (number == 8) 
+  {
+  digitalWrite(a, HIGH);
+  digitalWrite(b, HIGH);
+  digitalWrite(c, HIGH);
+  digitalWrite(d, HIGH);
+  digitalWrite(e, HIGH);
+  digitalWrite(f, HIGH);
+  digitalWrite(g, HIGH);
+  }
+  if (number == 9) 
+  {
+  digitalWrite(a, HIGH);
+  digitalWrite(b, HIGH);
+  digitalWrite(c, HIGH);
+  digitalWrite(d, HIGH);
+  digitalWrite(e, LOW);
+  digitalWrite(f, HIGH);
+  digitalWrite(g, HIGH);
+  }
   /* This function takes an integer between 0 and 9 as input. This integer must be written to the 7-Segment display */
   
 }
 
 int8_t getLEDStatus(int8_t LED) {
+  return digitalRead(LED);
   // RETURNS THE STATE OF A SPECIFIC LED. 0 = LOW, 1 = HIGH  
 }
 
 void setLEDState(int8_t LED, int8_t state){
+  if (state == HIGH)
+  {
+    digitalWrite(LED, HIGH);
+  }
+  else
+  {
+    digitalWrite(LED, LOW);
+  }
   // SETS THE STATE OF A SPECIFIC LED   
 }
 
 void toggleLED(int8_t LED){
-  // TOGGLES THE STATE OF SPECIFIC LED   
+  // TOGGLES THE STATE OF SPECIFIC LED  
+  if (getLEDStatus(LED) == LOW)
+  {
+    setLEDState(LED, HIGH);
+  }
+  else
+  {
+    setLEDState(LED, LOW);
+  } 
 }
 
 void GDP(void){
@@ -259,8 +402,8 @@ void GDP(void){
   /* Add code here to generate a random integer and then assign 
      this integer to number variable below
   */
-   number = 0 ;
-
+   number = random(10);
+  Display(number);
   // DISPLAY integer on 7Seg. by 
   /* Add code here to calling appropriate function that will display integer to 7-Seg*/
 
@@ -272,6 +415,9 @@ void GDP(void){
   // ‘{"id": "student_id", "timestamp": 1702212234, "number": 9, "ledA": 0, "ledB": 0}’
   doc["id"]         = "ID"; // Change to your student ID number
   doc["timestamp"]  = getTimeStamp();
+  doc["number"]  = number;
+  doc["ledA"]  = getLEDStatus(LED_A);
+  doc["ledB"]  = getLEDStatus(LED_B);
   /*Add code here to insert all other variabes that are missing from Json object
   according to schema above
   */
